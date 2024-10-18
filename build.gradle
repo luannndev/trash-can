@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.beryx.jlink' version '2.26.0'
+}
+
+group = 'dev.luan.trashcan'
+version = '1.0-SNAPSHOT'
+mainClassName = "dev.luan.trashcan.Launcher"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    implementation 'org.openjfx:javafx-controls:19'
+    implementation 'org.openjfx:javafx-fxml:19'
+
+    implementation 'org.jetbrains:annotations:22.0.0'
+
+    implementation 'com.google.code.gson:gson:2.11.0'
+}
+
+javafx {
+    version = "21"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
+}
+
+tasks {
+    shadowJar {
+        manifest {
+            attributes 'Main-Class': mainClassName
+        }
+    }
+    test {
+        useJUnitPlatform()
+    }
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+    compileJava {
+        options.encoding = 'UTF-8'
+        options.incremental = true
+    }
+    application {
+        setMainClass(mainClassName)
+    }
+    jlink {
+        options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+        launcher {
+            name = 'hellofx'
+        }
+    }
+}
